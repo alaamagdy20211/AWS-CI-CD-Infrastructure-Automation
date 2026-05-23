@@ -10,4 +10,5 @@ resource "aws_db_instance" "wp_rds" {
   db_subnet_group_name   = "wp_rds"
   parameter_group_name   = "default.mysql8.0"
   skip_final_snapshot    = true
+  depends_on = [aws_db_subnet_group.wp_rds_subnet_group]
 }
