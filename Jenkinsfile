@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(name: 'ENV', choices: ['dev_variables', 'prod_variables'], description: 'Select environment')
+    }
+
     tools {
         terraform 'terraform'
     }
@@ -30,8 +34,8 @@ pipeline {
 
         stage('Terraform Validate & Lint') {
             steps {
-                  sh 'terraform validate'
-                  sh 'terraform fmt -recursive'
+                sh 'terraform validate'
+                sh 'terraform fmt -recursive'
             }
         }
 
@@ -41,14 +45,16 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'AWS-Credentials'
                 ]]) {
-                    sh 'terraform plan -out=tfplan'
+                    sh """
+                    terraform plan -out=tfplan -var-file=${params.ENV}.tfvars
+                    """
                 }
             }
         }
 
         stage('Approval') {
             steps {
-                input message: 'Do you want to apply these changes?'
+                input message: "Do you want to apply changes for ${params.ENV}?"
             }
         }
 
