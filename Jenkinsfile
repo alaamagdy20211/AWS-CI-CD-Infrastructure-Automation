@@ -30,8 +30,8 @@ pipeline {
 
         stage('Terraform Validate & Lint') {
             steps {
-                sh 'terraform validate'
-                sh 'terraform fmt -check'
+                  sh 'terraform validate'
+                  sh 'terraform fmt -recursive'
             }
         }
 
