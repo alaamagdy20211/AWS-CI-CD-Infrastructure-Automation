@@ -46,7 +46,7 @@ pipeline {
                     credentialsId: 'AWS-Credentials'
                 ]]) {
                     sh """
-                    terraform plan -out=tfplan -var-file=${params.ENV}.tfvars
+                    terraform plan -out=tfplan -var--file=${params.ENV}.tfvars
                     """
                 }
             }
