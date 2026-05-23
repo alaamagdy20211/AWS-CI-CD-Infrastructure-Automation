@@ -1,11 +1,16 @@
 pipeline {
     agent any
-    
+
     tools {
-        terraform 'terraform' 
+        terraform 'terraform'
+    }
+
+    environment {
+        AWS_REGION = 'us-east-1'
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -14,7 +19,12 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                sh 'terraform init'
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'AWS-Credentials'
+                ]]) {
+                    sh 'terraform init'
+                }
             }
         }
 
@@ -27,7 +37,12 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                sh 'terraform plan -out=tfplan'
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'AWS-Credentials'
+                ]]) {
+                    sh 'terraform plan -out=tfplan'
+                }
             }
         }
 
@@ -39,7 +54,12 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                sh 'terraform apply -auto-approve tfplan'
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'AWS-Credentials'
+                ]]) {
+                    sh 'terraform apply -auto-approve tfplan'
+                }
             }
         }
     }
