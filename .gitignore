@@ -3,5 +3,4 @@
 *.tfstate.backup
 crash.log
 .terraform.lock.hcl
-*.tfvars
 *.tfvars.json   
