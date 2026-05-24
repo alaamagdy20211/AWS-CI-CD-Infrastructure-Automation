@@ -64,7 +64,7 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'AWS-Credentials'
                 ]]) {
-                    sh 'terraform apply -auto-approve tfplan'
+                    sh 'terraform destory -auto-approve tfplan'
                 }
             }
         }
