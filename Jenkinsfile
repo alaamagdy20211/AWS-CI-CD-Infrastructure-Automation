@@ -64,7 +64,7 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'AWS-Credentials'
                 ]]) {
-                    sh 'terraform destroy -auto-approve tfplan'
+                    sh 'terraform destroy -auto-approve -var-file=${params.ENV}.tfvars'
                 }
             }
         }
