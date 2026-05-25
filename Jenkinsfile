@@ -11,7 +11,7 @@ pipeline {
 
         choice(
             name: 'WORKSPACE',
-            choices: ['env', 'production'],
+            choices: ['dev', 'production'],
             description: 'Select terraform workspace'
         )
     }
