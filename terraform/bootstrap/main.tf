@@ -30,3 +30,21 @@ module "ec2_agent" {
   key_name           = var.key_name
   instance_type      = var.agent_instance_type
 }
+
+
+resource "local_file" "ansible_inventory" {
+  filename = "${path.module}/../../ansible/inventory.ini"
+  content = templatefile("${path.module}/templates/inventory.tpl", {
+    controller_ip = module.ec2_controller.controller_public_ip
+    agent_ip      = module.ec2_agent.agent_public_ip
+  })
+}
+
+resource "local_file" "ssh_config" {
+  filename = "${path.module}/../../ansible/ssh_config"
+  content = templatefile("${path.module}/templates/ssh_config.tpl", {
+    controller_ip = module.ec2_controller.controller_public_ip
+    agent_ip      = module.ec2_agent.agent_public_ip
+    key_name      = var.key_name
+  })
+}
