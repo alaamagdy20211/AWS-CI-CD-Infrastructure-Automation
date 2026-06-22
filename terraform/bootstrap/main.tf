@@ -30,4 +30,3 @@ module "ec2_agent" {
   key_name           = var.key_name
   instance_type      = var.agent_instance_type
 }
-
