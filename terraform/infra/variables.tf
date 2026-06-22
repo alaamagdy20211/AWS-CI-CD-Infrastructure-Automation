@@ -20,3 +20,6 @@ variable "subnets" {
 
  }))  
 }
+variable "key_name" {
+  
+}
