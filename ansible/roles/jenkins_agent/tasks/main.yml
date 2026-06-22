@@ -1,0 +1,147 @@
+---
+- name: Install Java (required to run the Jenkins agent process)
+  apt:
+    name: "{{ java_package }}"
+    state: present
+    update_cache: true
+  become: true
+
+- name: Verify Java installation
+  command: java -version
+  register: java_version_output
+  changed_when: false
+
+- name: Show installed Java version
+  debug:
+    msg: "{{ java_version_output.stderr }}"
+
+
+- name: Create dedicated jenkins user for running agent builds
+  user:
+    name: "{{ jenkins_agent_user }}"
+    home: "{{ jenkins_agent_home }}"
+    shell: /bin/bash
+    create_home: true
+  become: true
+
+
+- name: Create agent work directory
+  file:
+    path: "{{ jenkins_agent_work_dir }}"
+    state: directory
+    owner: "{{ jenkins_agent_user }}"
+    group: "{{ jenkins_agent_user }}"
+    mode: "0755"
+  become: true
+
+
+- name: Ensure .ssh directory exists for jenkins user
+  file:
+    path: "{{ jenkins_agent_home }}/.ssh"
+    state: directory
+    owner: "{{ jenkins_agent_user }}"
+    group: "{{ jenkins_agent_user }}"
+    mode: "0700"
+  become: true
+
+- name: Authorize controller's public key for the jenkins user
+  authorized_key:
+    user: "{{ jenkins_agent_user }}"
+    key: "{{ jenkins_controller_ssh_public_key }}"
+  become: true
+  when: jenkins_controller_ssh_public_key | length > 0
+
+
+- name: Install unzip and curl (needed to fetch Terraform binary)
+  apt:
+    name:
+      - unzip
+      - curl
+    state: present
+  become: true
+
+- name: Download Terraform binary
+  get_url:
+    url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
+    dest: "/tmp/terraform.zip"
+  become: true
+
+- name: Unzip Terraform binary to /usr/local/bin
+  unarchive:
+    src: "/tmp/terraform.zip"
+    dest: "/usr/local/bin"
+    remote_src: true
+  become: true
+
+- name: Verify Terraform installation
+  command: terraform -version
+  register: terraform_version_output
+  changed_when: false
+
+- name: Show installed Terraform version
+  debug:
+    msg: "{{ terraform_version_output.stdout_lines[0] }}"
+
+
+- name: Install Docker
+  apt:
+    name: docker.io
+    state: present
+    update_cache: true
+  become: true
+
+- name: Start and enable Docker
+  service:
+    name: docker
+    state: started
+    enabled: true
+  become: true
+
+- name: Add Jenkins user to Docker group
+  user:
+    name: "{{ jenkins_agent_user }}"
+    groups: docker
+    append: true
+  become: true
+
+- name: Verify Docker installation
+  command: docker --version
+  register: docker_version_output
+  changed_when: false
+
+- name: Show Docker version
+  debug:
+    msg: "{{ docker_version_output.stdout }}"
+
+
+- name: Add NodeSource repository
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+  args:
+    executable: /bin/bash
+  become: true
+
+- name: Install Node.js
+  apt:
+    name: nodejs
+    state: present
+    update_cache: true
+  become: true
+
+- name: Verify Node.js installation
+  command: node --version
+  register: node_version_output
+  changed_when: false
+
+- name: Show Node.js version
+  debug:
+    msg: "{{ node_version_output.stdout }}"
+
+- name: Verify npm installation
+  command: npm --version
+  register: npm_version_output
+  changed_when: false
+
+- name: Show npm version
+  debug:
+    msg: "{{ npm_version_output.stdout }}"

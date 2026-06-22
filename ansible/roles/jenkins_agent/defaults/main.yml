@@ -1,0 +1,9 @@
+---
+jenkins_agent_user: "jenkins"
+jenkins_agent_home: "/home/jenkins"
+jenkins_agent_work_dir: "/home/jenkins/agent"
+java_package: "openjdk-17-jdk"
+terraform_version: "1.7.5"
+
+
+jenkins_controller_ssh_public_key: ""
