@@ -1,0 +1,7 @@
+---
+- name: restart jenkins
+  docker_container:
+    name: "{{ jenkins_container_name }}"
+    state: started
+    restart: true
+  become: true

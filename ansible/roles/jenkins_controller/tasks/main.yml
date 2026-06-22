@@ -1,0 +1,95 @@
+---
+- name: Install prerequisite packages
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+    update_cache: true
+  become: true
+
+- name: Add Docker's official GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  become: true
+
+- name: Add Docker apt repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+  become: true
+
+- name: Install Docker Engine
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+    update_cache: true
+  become: true
+
+- name: Add ubuntu user to the docker group
+  user:
+    name: ubuntu
+    groups: docker
+    append: true
+  become: true
+
+- name: Ensure Docker service is running and enabled
+  systemd:
+    name: docker
+    state: started
+    enabled: true
+  become: true
+
+- name: Install Python docker SDK (required by the docker_container module)
+  pip:
+    name: docker
+    state: present
+  become: true
+
+- name: Create Jenkins home directory on host
+  file:
+    path: "{{ jenkins_home_host_path }}"
+    state: directory
+    owner: "1000"     
+    group: "1000"
+    mode: "0755"
+  become: true
+
+- name: Run Jenkins controller container
+  docker_container:
+    name: "{{ jenkins_container_name }}"
+    image: "{{ jenkins_image }}"
+    state: started
+    restart_policy: unless-stopped
+    ports:
+      - "{{ jenkins_http_port }}:8080"
+      - "{{ jenkins_agent_port }}:50000"
+    volumes:
+      - "{{ jenkins_home_host_path }}:/var/jenkins_home"
+      - "/var/run/docker.sock:/var/run/docker.sock"  
+  become: true
+
+- name: Wait for Jenkins to become responsive
+  uri:
+    url: "http://localhost:{{ jenkins_http_port }}/login"
+    status_code: 200
+  register: jenkins_ready
+  retries: 20
+  delay: 10
+  until: jenkins_ready.status == 200
+
+- name: Read initial Jenkins admin password
+  command: docker exec {{ jenkins_container_name }} cat /var/jenkins_home/secrets/initialAdminPassword
+  register: jenkins_initial_password
+  changed_when: false
+
+- name: Show initial Jenkins admin password
+  debug:
+    msg: "Jenkins initial admin password: {{ jenkins_initial_password.stdout }}"

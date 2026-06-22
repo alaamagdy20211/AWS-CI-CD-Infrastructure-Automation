@@ -1,0 +1,5 @@
+jenkins_image: "jenkins/jenkins:lts-jdk17"
+jenkins_container_name: "jenkins-controller"
+jenkins_home_host_path: "/opt/jenkins_home"
+jenkins_http_port: 8080
+jenkins_agent_port: 50000
