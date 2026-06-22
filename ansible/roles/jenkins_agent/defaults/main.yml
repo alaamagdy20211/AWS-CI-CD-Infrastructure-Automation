@@ -6,4 +6,4 @@ java_package: "openjdk-17-jdk"
 terraform_version: "1.7.5"
 
 
-jenkins_controller_ssh_public_key: ""
+jenkins_controller_pubkey_file: "{{ playbook_dir }}/../generated/jenkins_agent_key.pub"
