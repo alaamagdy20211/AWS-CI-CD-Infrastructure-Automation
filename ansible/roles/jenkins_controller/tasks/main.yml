@@ -93,3 +93,23 @@
 - name: Show initial Jenkins admin password
   debug:
     msg: "Jenkins initial admin password: {{ jenkins_initial_password.stdout }}"
+
+
+- name: Generate SSH keypair for controller-to-agent connections
+  openssh_keypair:
+    path: /home/ubuntu/.ssh/jenkins_agent_key
+    type: rsa
+    size: 4096
+    owner: ubuntu
+    group: ubuntu
+  become: true
+  register: jenkins_agent_keypair
+
+# Pull the public key back to the machine running Ansible (your laptop or
+# the Ansible control node) so the agent playbook can pick it up next.
+- name: Fetch the public key locally
+  fetch:
+    src: /home/ubuntu/.ssh/jenkins_agent_key.pub
+    dest: "{{ playbook_dir }}/../generated/jenkins_agent_key.pub"
+    flat: true
+  become: true
