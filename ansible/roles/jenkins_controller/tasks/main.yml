@@ -105,8 +105,6 @@
   become: true
   register: jenkins_agent_keypair
 
-# Pull the public key back to the machine running Ansible (your laptop or
-# the Ansible control node) so the agent playbook can pick it up next.
 - name: Fetch the public key locally
   fetch:
     src: /home/ubuntu/.ssh/jenkins_agent_key.pub
