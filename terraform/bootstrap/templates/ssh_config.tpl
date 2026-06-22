@@ -1,9 +1,11 @@
-[jenkins_controller]
-${controller_ip} ansible_user=ubuntu
+Host jenkins-controller
+    HostName ${controller_ip}
+    User ubuntu
+    IdentityFile ~/.ssh/${key_name}.pem
+    StrictHostKeyChecking no
 
-[jenkins_agent]
-${agent_ip} ansible_user=ubuntu
-
-[jenkins:children]
-jenkins_controller
-jenkins_agent
+Host jenkins-agent
+    HostName ${agent_ip}
+    User ubuntu
+    IdentityFile ~/.ssh/${key_name}.pem
+    StrictHostKeyChecking no
