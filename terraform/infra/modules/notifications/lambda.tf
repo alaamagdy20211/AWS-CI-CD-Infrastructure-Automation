@@ -54,8 +54,8 @@ resource "aws_lambda_function" "s3_notifier" {
 
 environment {
   variables = {
-    SENDER_EMAIL   = aws_ses_email_identity.email.email
-    RECEIVER_EMAIL = "alaamagdy3008@gmail.com"
+    SENDER_EMAIL   = var.sender_email
+    RECEIVER_EMAIL = var.recipient_email
     region = var.region
   }
 }

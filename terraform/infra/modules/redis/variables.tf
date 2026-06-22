@@ -9,3 +9,12 @@ variable "vpc_cidr"{
 variable "vpc_id"{
     type=string
 }
+
+variable "app_sg_id" {
+    type = string
+  
+}
+
+# for improvment
+# node_type
+# num_cache_nodes
