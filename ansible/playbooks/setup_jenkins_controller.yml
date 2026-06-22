@@ -1,0 +1,6 @@
+- name: Install and configure the Jenkins controller
+  hosts: jenkins_controller
+  become: true
+
+  roles:
+    - jenkins_controller
