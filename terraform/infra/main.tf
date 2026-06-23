@@ -53,6 +53,7 @@ module "notifications" {
 }
 
 
+
 resource "local_file" "infra_ssh_config" {
   filename = "${path.module}/../../ansible/inventory/ssh_config_infra"
   content = templatefile("${path.module}/templates/ssh_config.tpl", {
