@@ -40,11 +40,13 @@ module "ec2_agent" {
 #   })
 # }
 
-resource "local_file" "ssh_config" {
-  filename = "${path.module}/../../ansible/ssh_config"
+resource "local_file" "ssh_config_bootstrap" {
+  filename = "${path.module}/../../ansible/inventory/ssh_config_bootstrap"
   content = templatefile("${path.module}/templates/ssh_config.tpl", {
     controller_ip = module.ec2_controller.controller_public_ip
     agent_ip      = module.ec2_agent.agent_public_ip
     key_name      = var.key_name
   })
 }
+
+

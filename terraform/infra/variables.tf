@@ -21,5 +21,7 @@ variable "subnets" {
  }))  
 }
 variable "key_name" {
+    type = string
+    default = "pk_project_ec2"
   
 }

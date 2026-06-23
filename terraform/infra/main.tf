@@ -51,3 +51,13 @@ module "notifications" {
     region = var.region
   
 }
+
+
+resource "local_file" "infra_ssh_config" {
+  filename = "${path.module}/../../ansible/inventory/ssh_config_infra"
+  content = templatefile("${path.module}/templates/ssh_config.tpl", {
+    bastion_public_ip = module.ec2.bastion_public_ip
+    app_private_ip    = module.ec2.app_private_ip
+    key_name           = var.key_name                     
+  })
+}
