@@ -1,0 +1,8 @@
+---
+- name: Install Node.js on the application server
+  hosts: app
+  become: true
+  gather_facts: true
+
+  roles:
+    - nodejs
