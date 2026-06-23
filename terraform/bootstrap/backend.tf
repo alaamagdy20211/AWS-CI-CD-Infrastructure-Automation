@@ -1,8 +1,9 @@
 terraform {
   backend "s3" {
-    bucket         = ""
+    bucket         = "my-terraform-bucket-forlab2"
     key            = "bootstrap/terraform.tfstate"
     region         = "us-east-1"
-    encrypt        = true
+    dynamodb_table = "terraform-lock-table"
+
   }
 }
