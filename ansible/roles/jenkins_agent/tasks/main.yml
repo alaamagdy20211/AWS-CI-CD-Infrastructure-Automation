@@ -16,7 +16,7 @@
     msg: "{{ java_version_output.stderr }}"
 
 
-- name: Create dedicated jenkins user for running agent builds
+- name: Create dedicated Jenkins user
   user:
     name: "{{ jenkins_agent_user }}"
     home: "{{ jenkins_agent_home }}"
@@ -34,8 +34,7 @@
     mode: "0755"
   become: true
 
-
-- name: Ensure .ssh directory exists for jenkins user
+- name: Ensure .ssh directory exists for Jenkins user
   file:
     path: "{{ jenkins_agent_home }}/.ssh"
     state: directory
@@ -44,15 +43,23 @@
     mode: "0700"
   become: true
 
-- name: Authorize controller's public key for the jenkins user
+
+
+- name: Read controller public key
+  set_fact:
+    jenkins_controller_ssh_public_key: "{{ lookup('file', jenkins_controller_pubkey_file) }}"
+
+
+
+
+- name: Authorize controller SSH public key for Jenkins user
   authorized_key:
     user: "{{ jenkins_agent_user }}"
     key: "{{ jenkins_controller_ssh_public_key }}"
   become: true
-  when: jenkins_controller_ssh_public_key | length > 0
 
 
-- name: Install unzip and curl (needed to fetch Terraform binary)
+- name: Install unzip and curl
   apt:
     name:
       - unzip
@@ -60,13 +67,14 @@
     state: present
   become: true
 
+
 - name: Download Terraform binary
   get_url:
     url: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
     dest: "/tmp/terraform.zip"
   become: true
 
-- name: Unzip Terraform binary to /usr/local/bin
+- name: Unzip Terraform binary
   unarchive:
     src: "/tmp/terraform.zip"
     dest: "/usr/local/bin"
@@ -78,9 +86,10 @@
   register: terraform_version_output
   changed_when: false
 
-- name: Show installed Terraform version
+- name: Show Terraform version
   debug:
     msg: "{{ terraform_version_output.stdout_lines[0] }}"
+
 
 
 - name: Install Docker
@@ -91,7 +100,7 @@
   become: true
 
 - name: Start and enable Docker
-  service:
+  systemd:
     name: docker
     state: started
     enabled: true

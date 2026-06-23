@@ -20,16 +20,17 @@ variable "availability_zone" {
 
 variable "key_name" {
   type        = string
+  default = "pk_project_ec2"
 }
 
 variable "controller_instance_type" {
   type        = string
-  default     = "t3.medium"
+  default     = "c7i-flex.large"
 }
 
 variable "agent_instance_type" {
   type        = string
-  default     = "t3.small"
+  default     = "c7i-flex.large"
 }
 
 variable "allowed_ssh_cidr" {

@@ -6,3 +6,4 @@ crash.log
 *.tfvars.json   
 notes.txt
 improvements.txt
+jenkins_agent_key.pub

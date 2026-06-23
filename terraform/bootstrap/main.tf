@@ -32,13 +32,13 @@ module "ec2_agent" {
 }
 
 
-resource "local_file" "ansible_inventory" {
-  filename = "${path.module}/../../ansible/inventory.ini"
-  content = templatefile("${path.module}/templates/inventory.tpl", {
-    controller_ip = module.ec2_controller.controller_public_ip
-    agent_ip      = module.ec2_agent.agent_public_ip
-  })
-}
+# resource "local_file" "ansible_inventory" {
+#   filename = "${path.module}/../../ansible/inventory.ini"
+#   content = templatefile("${path.module}/templates/inventory.tpl", {
+#     controller_ip = module.ec2_controller.controller_public_ip
+#     agent_ip      = module.ec2_agent.agent_public_ip
+#   })
+# }
 
 resource "local_file" "ssh_config" {
   filename = "${path.module}/../../ansible/ssh_config"
