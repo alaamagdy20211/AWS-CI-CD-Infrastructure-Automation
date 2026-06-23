@@ -52,7 +52,14 @@ module "notifications" {
   
 }
 
+module "alb" {
+  source = "./modules/alb"
+  app_id = module.ec2.app_id
+  app_sg_id = module.security.app_sg_id
+  subnets = module.network.subnets
+  vpc_id = module.network.vpc_id
 
+}
 
 resource "local_file" "infra_ssh_config" {
   filename = "${path.module}/../../ansible/inventory/ssh_config_infra"
