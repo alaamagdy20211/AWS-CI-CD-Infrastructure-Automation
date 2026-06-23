@@ -154,3 +154,25 @@
 - name: Show npm version
   debug:
     msg: "{{ npm_version_output.stdout }}"
+
+- name: Install Python pip (required to install Ansible)
+  apt:
+    name: python3-pip
+    state: present
+  become: true
+
+- name: Install Ansible on the agent
+  pip:
+    name: ansible
+    state: present
+    executable: pip3
+  become: true
+
+- name: Verify Ansible installation
+  command: ansible --version
+  register: ansible_version_output
+  changed_when: false
+
+- name: Show installed Ansible version
+  debug:
+    msg: "{{ ansible_version_output.stdout_lines[0] }}"

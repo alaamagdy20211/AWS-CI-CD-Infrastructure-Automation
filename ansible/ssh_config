@@ -1,0 +1,10 @@
+Host jenkins-controller
+    HostName 44.220.170.88
+    User ubuntu
+    IdentityFile ~/.ssh/pk_project_ec2.pem
+    StrictHostKeyChecking accept-new
+Host jenkins-agent
+    HostName 32.196.147.91
+    User ubuntu
+    IdentityFile ~/.ssh/pk_project_ec2.pem
+    StrictHostKeyChecking accept-new  

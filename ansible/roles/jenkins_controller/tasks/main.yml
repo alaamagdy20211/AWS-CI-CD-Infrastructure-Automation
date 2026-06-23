@@ -66,10 +66,37 @@
     group: ubuntu
     mode: "0755"
 
+- name: Create build context directory for the custom Jenkins image
+  file:
+    path: /opt/jenkins-image-build
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Copy custom Jenkins Dockerfile to the controller
+  copy:
+    src: Dockerfile
+    dest: /opt/jenkins-image-build/Dockerfile
+    mode: "0644"
+  become: true
+
+- name: Build the custom Jenkins image
+  docker_image:
+    name: "{{ jenkins_custom_image_name }}"
+    build:
+      path: /opt/jenkins-image-build
+      pull: true
+    source: build
+    force_source: true
+  become: true
+  
+  
+
+
 - name: Run Jenkins controller container
   community.docker.docker_container:
     name: "{{ jenkins_container_name }}"
-    image: "{{ jenkins_image }}"
+    image: "{{ jenkins_custom_image_name }}"
     state: started
     restart_policy: unless-stopped
     ports:
