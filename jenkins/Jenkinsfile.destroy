@@ -106,7 +106,7 @@ pipeline {
                     sh """
                         terraform destroy \
                         -auto-approve \
-                        -var-file=${params.ENV}.tfvars
+                       -var-file=envs/${params.ENV}.tfvars
                     """
                 }
             }
