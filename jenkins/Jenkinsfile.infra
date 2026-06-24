@@ -33,11 +33,11 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-
+  
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'AWS-Credentials'
-                ]]) {
+                ]]) {        dir('terraform/infra'){
 
                     sh 'cd terraform/infra'
                     sh 'terraform init'
@@ -48,17 +48,23 @@ pipeline {
                     """
                 }
             }
+            }
         }
 
         stage('Terraform Format') {
             steps {
+                     dir('terraform/infra'){
                 sh 'terraform fmt -recursive'
-            }
+            
+                     }
+                     }
         }
 
         stage('Terraform Validate') {
             steps {
+                     dir('terraform/infra') {
                 sh 'terraform validate'
+            }
             }
         }
 
@@ -69,21 +75,24 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'AWS-Credentials'
                 ]]) {
-
+                  dir('terraform/infra') {
                     sh """
                         terraform plan \
                         -out=tfplan \
                        -var-file=envs/${params.ENV}.tfvars
                     """
                 }
+                }
             }
         }
 
         stage('Approval') {
             steps {
+                     dir('terraform/infra'){
                 input message: "Apply changes to ${params.WORKSPACE}?"
             }
-        }
+            
+                    }        }
 
         stage('Terraform Apply') {
             steps {
@@ -92,7 +101,7 @@ pipeline {
                     $class: 'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'AWS-Credentials'
                 ]]) {
-
+                     dir('terraform/infra'){
                     sh '''
                         terraform apply \
                         -auto-approve tfplan
@@ -105,6 +114,7 @@ pipeline {
                     //     -var-file=${params.ENV}.tfvars
                     // """
                 }
+            }
             }
         }
     }
