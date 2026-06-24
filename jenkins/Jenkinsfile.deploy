@@ -23,7 +23,7 @@ pipeline {
                     sh '''
                        cd ansible
                       ansible-playbook \
-                        i inventory/infra.ini \
+                        -i inventory/infra.ini \
                      --private-key "$SSH_KEY_PATH" \
                         -u "$SSH_USER" 
                         --ssh-common-args="-F inventory/ssh_config" \
