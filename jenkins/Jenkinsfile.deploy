@@ -25,7 +25,7 @@ pipeline {
                           -i ansible/inventory.ini \
                           --private-key "$SSH_KEY_PATH" \
                           -u "$SSH_USER" \
-                          ansible/playbooks/deploy_app.yml
+                          ansible/playbooks/deploy_app_config.yml
                     '''
                 }
             }
