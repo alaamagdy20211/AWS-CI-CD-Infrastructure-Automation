@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'jenkins-agent' } 
+    agent { label 'jenkins-agent' }
 
     environment {
         ANSIBLE_HOST_KEY_CHECKING = 'False'
@@ -21,11 +21,12 @@ pipeline {
                     usernameVariable: 'SSH_USER'
                 )]) {
                     sh '''
+                        cd ansible
                         ansible-playbook \
-                          -i ansible/inventory.ini \
+                          -i inventory/infra.ini \
                           --private-key "$SSH_KEY_PATH" \
                           -u "$SSH_USER" \
-                          ansible/playbooks/deploy_app_config.yml
+                          playbooks/deploy_app_config.yml
                     '''
                 }
             }
@@ -37,7 +38,7 @@ pipeline {
             echo 'Deployment finished successfully.'
         }
         failure {
-            echo 'Deployment failed — check the Ansible output above.'
+            echo 'Deployment failed — check Ansible output above.'
         }
     }
 }
