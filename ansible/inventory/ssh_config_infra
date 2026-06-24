@@ -1,13 +1,13 @@
 Host bastion
     HostName 3.237.65.82
-    User ubuntu
+    User ec2-user
     IdentityFile ~/.ssh/pk_project_ec2.pem
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
 
 Host app-server
     HostName 10.0.11.73
-    User ubuntu
+    User ec2-user
     IdentityFile ~/.ssh/pk_project_ec2.pem
     ProxyJump bastion
     StrictHostKeyChecking no
