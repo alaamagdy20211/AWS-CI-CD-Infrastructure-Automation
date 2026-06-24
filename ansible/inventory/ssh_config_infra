@@ -5,7 +5,7 @@ Host bastion
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
 
-Host app-server
+Host app
     HostName 10.0.11.73
     User ec2-user
     IdentityFile ~/.ssh/pk_project_ec2.pem
