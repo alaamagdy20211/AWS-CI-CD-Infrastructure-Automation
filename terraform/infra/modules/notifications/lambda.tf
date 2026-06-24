@@ -46,7 +46,7 @@ resource "aws_iam_role_policy" "state_notify_policy" {
 
 
 resource "aws_lambda_function" "s3_notifier" {
-  filename      = "lambda/s3_notifier.zip"
+  filename      = "${path.module}/lambda/s3_notifier.zip"
   function_name = "s3-upload-notifier_${terraform.workspace}"
   role          = aws_iam_role.state_notify_role.arn
   handler       = "handler.lambda_handler"
