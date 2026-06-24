@@ -12,6 +12,7 @@ provisioner "local-exec"{
 
 
 resource "aws_instance" "app" {
+  
 ami = var.ami
 instance_type = var.instance_type
   subnet_id = var.subnets["priv_subnet_1"].id
