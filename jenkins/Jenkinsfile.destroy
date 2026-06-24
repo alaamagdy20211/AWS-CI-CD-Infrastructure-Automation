@@ -1,0 +1,116 @@
+pipeline {
+     agent {
+        label 'jenkins-agent'
+    }
+
+    parameters {
+
+        choice(
+            name: 'ENV',
+            choices: ['dev_variables', 'prod_variables'],
+            description: 'Select environment tfvars file'
+        )
+
+        choice(
+            name: 'WORKSPACE',
+            choices: ['dev', 'production'],
+            description: 'Select terraform workspace'
+        )
+    }
+
+  
+    environment {
+        AWS_REGION = 'us-east-1'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+  
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'AWS-Credentials'
+                ]]) {        dir('terraform/infra'){
+
+                    sh 'terraform init'
+
+                    sh """
+                        terraform workspace select ${params.WORKSPACE} || \
+                        terraform workspace new ${params.WORKSPACE}
+                    """
+                }
+            }
+            }
+        }
+
+        stage('Terraform Format') {
+            steps {
+                     dir('terraform/infra'){
+                sh 'terraform fmt -recursive'
+            
+                     }
+                     }
+        }
+
+        stage('Terraform Validate') {
+            steps {
+                     dir('terraform/infra') {
+                sh 'terraform validate'
+            }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'AWS-Credentials'
+                ]]) {
+                  dir('terraform/infra') {
+                    sh """
+                        terraform plan \
+                        -out=tfplan \
+                       -var-file=envs/${params.ENV}.tfvars
+                    """
+                }
+                }
+            }
+        }
+
+        stage('Approval') {
+            steps {
+                     dir('terraform/infra'){
+                input message: "Apply changes to ${params.WORKSPACE}?"
+            }
+            
+                    }        }
+
+        stage('Terraform Apply') {
+            steps {
+
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'AWS-Credentials'
+                ]]) {
+                     dir('terraform/infra'){
+                 
+
+                    sh """
+                        terraform destroy \
+                        -auto-approve \
+                        -var-file=${params.ENV}.tfvars
+                    """
+                }
+            }
+            }
+        }
+    }
+}
