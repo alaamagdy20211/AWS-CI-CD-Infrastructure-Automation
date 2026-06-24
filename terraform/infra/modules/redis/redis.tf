@@ -5,7 +5,7 @@ resource "aws_elasticache_subnet_group" "subnets" {
   
 }
 
-resource "aws_elasticache_cluster" "pte-dev-redis" {
+resource "aws_elasticache_cluster" "pte_dev_redis" {
   cluster_id           = "pte-dev"
   engine               = "redis"
   node_type            = "cache.t3.micro"
