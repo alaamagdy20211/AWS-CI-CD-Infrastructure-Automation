@@ -39,7 +39,7 @@ pipeline {
                     credentialsId: 'AWS-Credentials'
                 ]]) {
 
-                    sh 'cd infra'
+                    sh 'cd terraform/infra'
                     sh 'terraform init'
 
                     sh """
