@@ -93,17 +93,17 @@ pipeline {
                     credentialsId: 'AWS-Credentials'
                 ]]) {
 
-                    // sh '''
-                    //     terraform apply \
-                    //     -auto-approve tfplan
-                    // '''
+                    sh '''
+                        terraform apply \
+                        -auto-approve tfplan
+                    '''
 
 
-                    sh """
-                        terraform destroy \
-                        -auto-approve \
-                        -var-file=${params.ENV}.tfvars
-                    """
+                    // sh """
+                    //     terraform destroy \
+                    //     -auto-approve \
+                    //     -var-file=${params.ENV}.tfvars
+                    // """
                 }
             }
         }
