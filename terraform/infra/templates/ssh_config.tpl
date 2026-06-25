@@ -1,14 +1,12 @@
-Host bastion
-    HostName ${bastion_public_ip}
+Host  ${bastion_public_ip}
     User ec2-user
-    IdentityFile ~/.ssh/${key_name}.pem
+    IdentityFile /home/jenkins/.ssh/${key_name}.pem
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
 
-Host app-server
-    HostName ${app_private_ip}
+Host ${app_private_ip}
     User ec2-user
-    IdentityFile ~/.ssh/${key_name}.pem
-    ProxyJump bastion
+  IdentityFile /home/jenkins/.ssh/${key_name}.pem
+      ProxyJump  ${bastion_public_ip}
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null

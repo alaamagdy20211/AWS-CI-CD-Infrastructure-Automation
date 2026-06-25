@@ -1,12 +1,12 @@
-Host 100.31.239.69
+Host  100.31.239.69
     User ec2-user
     IdentityFile /home/jenkins/.ssh/pk_project_ec2.pem
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
 
-Host 10.0.11.126
+Host 10.0.12.75
     User ec2-user
-    IdentityFile /home/jenkins/.ssh/pk_project_ec2.pem
-    ProxyJump 100.31.239.69
+  IdentityFile /home/jenkins/.ssh/pk_project_ec2.pem
+      ProxyJump  100.31.239.69
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
