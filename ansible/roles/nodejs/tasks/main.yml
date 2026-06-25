@@ -6,29 +6,19 @@
     state: present
   become: true
 
-- name: Download NodeSource RPM setup script
-  get_url:
-    url: "https://rpm.nodesource.com/setup_{{ nodejs_major_version }}.x"
-    dest: /tmp/nodesource_setup.sh
-    mode: "0755"
+- name: Enable nodejs 18
+  command: amazon-linux-extras enable nodejs18
   become: true
-
-- name: Run NodeSource RPM setup script (adds the yum repo)
-  command: bash /tmp/nodesource_setup.sh
-  become: true
-  register: nodesource_setup
-  changed_when: "'Repository configured' in nodesource_setup.stdout or true"
-
-  - name: Enable nodejs 18
-  shell: amazon-linux-extras enable nodejs18
 
 - name: Clean yum metadata
   command: yum clean metadata
+  become: true
 
 - name: Install Node.js
   yum:
     name: nodejs
     state: present
+  become: true
 
 - name: Verify Node.js installation
   command: node --version
