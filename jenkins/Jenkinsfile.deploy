@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'jenkins-agent' }
+    agent { label 'jenkins_agent' }
 
     environment {
         ANSIBLE_HOST_KEY_CHECKING = 'False'
@@ -12,24 +12,6 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Debug SSH') {
-    steps {
-        withCredentials([sshUserPrivateKey(
-            credentialsId: 'ec2-ssh-key',
-            keyFileVariable: 'SSH_KEY_PATH',
-            usernameVariable: 'SSH_USER'
-        )]) {
-            sh '''
-                echo "Key file path: $SSH_KEY_PATH"
-                ls -la "$SSH_KEY_PATH"
-                echo "--- Testing direct connection to bastion ---"
-                ssh -vvv -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$SSH_USER@3.237.65.82" "echo BASTION_OK" 2>&1 | tail -30
-                echo "--- Testing ProxyJump to app server ---"
-                ssh -vvv -o ProxyJump="$SSH_USER@3.237.65.82" -o StrictHostKeyChecking=no -i "$SSH_KEY_PATH" "$SSH_USER@10.0.11.73" "echo APP_OK" 2>&1 | tail -40
-            '''
-        }
-    }
-}
 
         stage('Deploy via Ansible') {
 
