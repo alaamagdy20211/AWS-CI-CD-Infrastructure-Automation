@@ -6,3 +6,4 @@ resource "aws_security_group" "allow_traffic" {
     Name = "allow_traffic"
   }
 }
+
