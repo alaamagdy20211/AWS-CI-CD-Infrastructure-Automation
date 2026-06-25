@@ -28,9 +28,7 @@ pipeline {
                  cd ansible
                    ansible-playbook \
                   -i inventory/infra.ini \
-                  --private-key $SSH_KEY_PATH \
-                    -u $SSH_USER \
-                  --ssh-common-args='-F inventory/ssh_config' \
+                  --ssh-common-args='-F inventory/ssh_config_infra' \
                  playbooks/deploy_app_config.yml
                  """  
                 }
