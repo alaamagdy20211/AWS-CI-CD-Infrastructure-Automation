@@ -1,25 +1,32 @@
 - name: Install prerequisite packages
-  yum:
+  apt:
     name:
+      - apt-transport-https
+      - ca-certificates
       - curl
-      - gnupg2
+      - gnupg
+    state: present
+    update_cache: true
+  become: true
+
+
+- name: Add NodeSource GPG key
+  apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key"
     state: present
   become: true
 
-- name: Enable nodejs16
-  command: amazon-linux-extras enable nodejs16
+- name: Add NodeSource apt repository
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_{{ nodejs_major_version }}.x nodistro main"
+    state: present
   become: true
-
-- name: Clean yum metadata
-  command: yum clean metadata
-  become: true
-
-
 
 - name: Install Node.js
-  yum:
+  apt:
     name: nodejs
     state: present
+    update_cache: true
   become: true
 
 - name: Verify Node.js installation
