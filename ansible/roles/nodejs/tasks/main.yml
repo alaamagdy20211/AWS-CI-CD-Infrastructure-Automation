@@ -19,11 +19,16 @@
   register: nodesource_setup
   changed_when: "'Repository configured' in nodesource_setup.stdout or true"
 
+  - name: Enable nodejs 18
+  shell: amazon-linux-extras enable nodejs18
+
+- name: Clean yum metadata
+  command: yum clean metadata
+
 - name: Install Node.js
   yum:
     name: nodejs
     state: present
-  become: true
 
 - name: Verify Node.js installation
   command: node --version
