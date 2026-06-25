@@ -6,13 +6,14 @@
     state: present
   become: true
 
-- name: Enable nodejs 18
-  command: amazon-linux-extras enable nodejs18
+- name: Enable nodejs16
+  command: amazon-linux-extras enable nodejs16
   become: true
 
 - name: Clean yum metadata
   command: yum clean metadata
   become: true
+
 
 
 - name: Install Node.js
