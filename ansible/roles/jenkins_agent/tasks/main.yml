@@ -161,12 +161,17 @@
     state: present
   become: true
 
+# - name: Install Ansible on the agent
+#   pip:
+#     name: ansible
+#     state: present
+#     executable: pip3
+#   become: true
+
 - name: Install Ansible on the agent
   pip:
-    name: ansible
-    state: present
+    name: ansible-core==2.16.14
     executable: pip3
-  become: true
 
 - name: Verify Ansible installation
   command: ansible --version
