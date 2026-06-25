@@ -14,6 +14,7 @@
   command: yum clean metadata
   become: true
 
+
 - name: Install Node.js
   yum:
     name: nodejs
