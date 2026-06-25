@@ -7,3 +7,4 @@ terraform_version: "1.7.5"
 
 
 jenkins_controller_pubkey_file: "{{ playbook_dir }}/../generated/jenkins_agent_key.pub"
+ec2_private_key_local_path: "~/.ssh/pk_project_ec2.pem"

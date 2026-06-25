@@ -1,10 +1,8 @@
-Host jenkins-controller
-    HostName ${controller_ip}
+Host ${controller_ip}
     User ubuntu
     IdentityFile ~/.ssh/${key_name}.pem
     StrictHostKeyChecking accept-new
-Host jenkins-agent
-    HostName ${agent_ip}
+Host ${agent_ip}
     User ubuntu
     IdentityFile ~/.ssh/${key_name}.pem
     StrictHostKeyChecking accept-new  

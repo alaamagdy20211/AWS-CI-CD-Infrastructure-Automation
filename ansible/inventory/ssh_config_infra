@@ -1,14 +1,12 @@
-Host bastion
-    HostName 3.237.65.82
+Host 100.31.239.69
     User ec2-user
     IdentityFile /home/jenkins/.ssh/pk_project_ec2.pem
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
 
-Host app
-    HostName 10.0.11.73
+Host 10.0.11.126
     User ec2-user
     IdentityFile /home/jenkins/.ssh/pk_project_ec2.pem
-    ProxyJump bastion
+    ProxyJump 100.31.239.69
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null

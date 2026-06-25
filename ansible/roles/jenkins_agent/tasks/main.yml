@@ -110,7 +110,7 @@
   user:
     name: "{{ jenkins_agent_user }}"
     groups: docker
-    append: true
+    append: true 
   become: true
 
 - name: Verify Docker installation
@@ -176,3 +176,13 @@
 - name: Show installed Ansible version
   debug:
     msg: "{{ ansible_version_output.stdout_lines[0] }}"
+
+
+- name: Copy the EC2 private key onto the agent for bastion/app connections
+  copy:
+    src: "{{ ec2_private_key_local_path }}"
+    dest: "/home/{{ jenkins_agent_user }}/.ssh/pk_project_ec2.pem"
+    owner: "{{ jenkins_agent_user }}"
+    group: "{{ jenkins_agent_user }}"
+    mode: "0400"
+  become: true
