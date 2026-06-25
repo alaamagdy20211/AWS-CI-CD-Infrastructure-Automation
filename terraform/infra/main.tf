@@ -16,7 +16,6 @@ module "ec2" {
     source = "./modules/ec2"
     bastion_sg_id = module.security.bastion_sg_id
     app_sg_id = module.security.app_sg_id
-    ami = var.ami
     instance_type =  var.instance_type   
     subnets = module.network.subnets
     key_name = var.key_name
@@ -64,6 +63,15 @@ module "alb" {
 resource "local_file" "infra_ssh_config" {
   filename = "${path.module}/../../ansible/inventory/ssh_config_infra"
   content = templatefile("${path.module}/templates/ssh_config.tpl", {
+    bastion_public_ip = module.ec2.bastion_public_ip
+    app_private_ip    = module.ec2.app_private_ip
+    key_name           = var.key_name                     
+  })
+}
+
+resource "local_file" "inventory" {
+  filename = "${path.module}/../../ansible/inventory/infra.ini"
+  content = templatefile("${path.module}/templates/inventory.tpl", {
     bastion_public_ip = module.ec2.bastion_public_ip
     app_private_ip    = module.ec2.app_private_ip
     key_name           = var.key_name                     

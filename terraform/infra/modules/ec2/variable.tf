@@ -5,9 +5,7 @@ variable "subnets" {
 variable "instance_type" {
   
 }
-variable "ami" {
-  
-}
+
 variable "bastion_sg_id" {
   
 }

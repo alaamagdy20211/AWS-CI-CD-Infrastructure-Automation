@@ -1,6 +1,5 @@
     region = "eu-central-1"
-    ami = "ami-036bdae36143a955f"
-    instance_type = "t3.micro"
+    instance_type = "c7i-flex.large"
      vpc_icdr ="10.0.0.0/16"
 
    subnets = [
