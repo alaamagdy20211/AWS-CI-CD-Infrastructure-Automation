@@ -15,7 +15,7 @@ resource "aws_instance" "app" {
   
 ami = var.ami
 instance_type = var.instance_type
-  subnet_id = var.subnets["priv_subnet_1"].id
+  subnet_id = var.subnets["priv_subnet_2"].id
   vpc_security_group_ids = [var.app_sg_id]
   key_name =var.key_name    
   provisioner "local-exec"{
