@@ -1,0 +1,71 @@
+---
+
+
+- name: Install git
+  apt:
+    name: git
+    state: present
+  become: true
+
+- name: Clone or update the application repository
+  git:
+    repo: "{{ app_repo_url }}"
+    dest: "{{ app_dir }}"
+    version: "{{ app_repo_branch }}"
+    force: true
+  become: true
+  become_user: ubuntu
+
+- name: Install npm dependencies
+  npm:
+    path: "{{ app_dir }}"
+  become: true
+  become_user: ubuntu
+
+# The app reads its DB/Redis connection details from environment
+# variables (RDS_HOSTNAME, RDS_USERNAME, etc. — see app.js). PM2 doesn't
+# read a plain .env file by default, so instead of relying on dotenv
+# (which the app doesn't import), we generate a PM2 ecosystem file that
+# defines these as explicit env vars for the process itself.
+- name: Generate PM2 ecosystem file with DB/Redis connection env vars
+  template:
+    src: ecosystem.config.js.j2
+    dest: "{{ app_dir }}/ecosystem.config.js"
+    owner: ubuntu
+    group: ubuntu
+    mode: "0644"
+  become: true
+
+- name: Stop any previous PM2 process for this app 
+  command: pm2 delete nodeapp
+  become: true
+  become_user: ubuntu
+  ignore_errors: true   # fails harmlessly if it wasn't already running
+  changed_when: false
+
+- name: Start the app via PM2 using the ecosystem file
+  command: pm2 start ecosystem.config.js
+  args:
+    chdir: "{{ app_dir }}"
+  become: true
+  become_user: ubuntu
+
+- name: Save the PM2 process list (so it persists across pm2 restarts)
+  command: pm2 save
+  become: true
+  become_user: ubuntu
+  changed_when: false
+
+- name: Verify the app responds on its port
+  uri:
+    url: "http://localhost:{{ app_port }}/db"
+    status_code: 200
+  register: app_check
+  retries: 5
+  delay: 3
+  until: app_check.status == 200
+  ignore_errors: true   # don't fail the whole play if DB isn't reachable yet — just report it
+
+- name: Show app health check result
+  debug:
+    msg: "App /db endpoint response: {{ app_check.status | default('no response') }}"

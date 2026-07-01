@@ -1,0 +1,17 @@
+module.exports = {
+  apps: [
+    {
+      name: "nodeapp",
+      script: "app.js",
+      cwd: "{{ app_dir }}",
+      env: {
+        RDS_HOSTNAME: "{{ rds_hostname }}",
+        RDS_USERNAME: "{{ rds_username }}",
+        RDS_PASSWORD: "{{ rds_password }}",
+        RDS_PORT: "{{ rds_port }}",
+        REDIS_HOSTNAME: "{{ redis_hostname }}",
+        REDIS_PORT: "{{ redis_port }}"
+      }
+    }
+  ]
+};

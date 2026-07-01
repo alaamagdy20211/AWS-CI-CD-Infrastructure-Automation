@@ -1,0 +1,11 @@
+app_repo_url: "https://github.com/mahmoud254/jenkins_nodejs_example.git"
+app_repo_branch: "rds-redis"
+app_dir: "/home/ubuntu/nodeapp"
+app_port: 3000
+
+rds_hostname: ""
+rds_username: ""
+rds_password: ""
+rds_port: "3306"
+redis_hostname: ""
+redis_port: "6379"

@@ -1,0 +1,12 @@
+Host  44.200.208.200
+    User ubuntu
+    IdentityFile /home/jenkins/.ssh/pk_project_ec2.pem
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+
+Host 10.0.12.102
+    User ubuntu
+  IdentityFile /home/jenkins/.ssh/pk_project_ec2.pem
+      ProxyJump  44.200.208.200
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
