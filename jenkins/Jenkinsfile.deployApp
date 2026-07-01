@@ -1,0 +1,53 @@
+pipeline {
+    agent { label 'jenkins-agent' }
+
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Deploy app') {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'ec2-ssh-key',
+                        keyFileVariable: 'SSH_KEY_PATH',
+                        usernameVariable: 'SSH_USER'
+                    ),
+                    usernamePassword(
+                        credentialsId: 'rds-db-creds',
+                        usernameVariable: 'RDS_USERNAME',
+                        passwordVariable: 'RDS_PASSWORD'
+                    ),
+                    string(credentialsId: 'rds-endpoint',   variable: 'RDS_ENDPOINT'),
+                    string(credentialsId: 'redis-endpoint', variable: 'REDIS_ENDPOINT')
+                ]) {
+                    sh """
+                        cd ansible
+                        ansible-playbook \\
+                            -i inventory/infra.ini \\
+                            --ssh-common-args="-F inventory/ssh_config_infra" \\
+                            -e "rds_hostname=\$RDS_ENDPOINT" \\
+                            -e "rds_username=\$RDS_USERNAME" \\
+                            -e "rds_password=\$RDS_PASSWORD" \\
+                            -e "redis_hostname=\$REDIS_ENDPOINT" \\
+                            playbooks/deploy_app.yml
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment finished successfully.'
+        }
+        failure {
+            echo 'Deployment failed — check the Ansible output above.'
+        }
+    }
+}

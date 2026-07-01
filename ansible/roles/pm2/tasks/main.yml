@@ -1,9 +1,8 @@
 ---
-- name: Install PM2 globally via npm
-  npm:
-    name: pm2
-    global: true
-    state: present
+- name: Install PM2 globally
+  command: npm install -g pm2
+  args:
+    creates: /usr/local/bin/pm2
   become: true
 
 - name: Verify PM2 installation
