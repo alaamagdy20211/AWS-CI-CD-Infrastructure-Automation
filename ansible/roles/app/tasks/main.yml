@@ -17,7 +17,7 @@
   become_user: ubuntu
 
 - name: Install npm dependencies
-  command: npm ci
+  command: npm install
   args:
     chdir: "{{ app_dir }}"
   become: true
