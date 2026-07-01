@@ -1,8 +1,0 @@
-Host 100.57.160.43
-    User ubuntu
-    IdentityFile ~/.ssh/pk_project_ec2.pem
-    StrictHostKeyChecking accept-new
-Host 3.94.149.75
-    User ubuntu
-    IdentityFile ~/.ssh/pk_project_ec2.pem
-    StrictHostKeyChecking accept-new  

@@ -1,0 +1,16 @@
+---
+- name: Install PM2 globally via npm
+  npm:
+    name: pm2
+    global: true
+    state: present
+  become: true
+
+- name: Verify PM2 installation
+  command: pm2 --version
+  register: pm2_version_output
+  changed_when: false
+
+- name: Show installed PM2 version
+  debug:
+    msg: "PM2 installed: {{ pm2_version_output.stdout }}"
