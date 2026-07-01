@@ -19,7 +19,7 @@
 - name: Install npm dependencies
   command: npm install
   args:
-    chdir: "{{ app_dir }}"
+    chdir: "{{ app_dir }}/nodeapp"
   become: true
   become_user: ubuntu
 
@@ -31,7 +31,7 @@
 - name: Generate PM2 ecosystem file with DB/Redis connection env vars
   template:
     src: ecosystem.config.js.j2
-    dest: "{{ app_dir }}/ecosystem.config.js"
+    dest: "{{ app_dir }}/nodeapp/ecosystem.config.js"
     owner: ubuntu
     group: ubuntu
     mode: "0644"
@@ -47,7 +47,7 @@
 - name: Start the app via PM2 using the ecosystem file
   command: pm2 start ecosystem.config.js
   args:
-    chdir: "{{ app_dir }}"
+    chdir: "{{ app_dir }}/nodeapp"
   become: true
   become_user: ubuntu
 
