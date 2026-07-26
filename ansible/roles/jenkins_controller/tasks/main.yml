@@ -10,7 +10,6 @@
     state: present
     update_cache: true
 
-
 - name: Install Docker prerequisites
   apt:
     name:
